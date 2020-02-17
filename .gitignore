@@ -29,3 +29,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+###Swagger generated files####
+.openapi-generator-ignore
+.openapi-generator/*
+**/src/main/java/com/example/swaggerdemo/openapi/generated/**

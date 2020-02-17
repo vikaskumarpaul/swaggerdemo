@@ -1,0 +1,288 @@
+openapi: 3.0.1
+info:
+  title: SwaggerDemo
+  description: This project is to demonstarte open swagger with open API's
+  termsOfService: NA
+  contact: 
+    email: er.vikaspaul@gmail.com
+  license:
+    name: Copyrights @Vikas Paul
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
+servers:
+  - url: 'https://localhost:7070/swaggerdemo/v1'
+tags:
+  - name: customer
+    description: Customer CURD operations with swagger
+paths:
+  /customer:
+    put:
+      tags:
+        - customer
+      summary: Update an existing customer
+      description: Update an existing known customer
+      operationId: updateCustomer
+      requestBody:
+        description: Customer Update Request for an Existing Customer in System
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
+        required: true
+      responses:
+        '202':
+          description: Customer Sucessfully Updated
+        '400':
+          description: Invalid Customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '405':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        default:
+          description: Successful Operation
+          content: {}
+    post:
+      tags:
+        - customer
+      summary: Add new Customer
+      description: Add New Customer into System 
+      operationId: addCustomer
+      requestBody:
+        description: Enter the Required Fields to create new customer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreationRequest'
+        required: true
+      responses:
+        '202':
+          description: Customer Sucessfully Added
+        '400':
+          description: Invalid Input Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '405':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        default:
+          description: successful operation
+          content: {}
+  '/customer/{customerUUID}':
+    get:
+      tags:
+        - customer
+      summary: Find customer by ID
+      description: Returns a single customer
+      operationId: getCustomerById
+      parameters:
+        - name: customerUUID
+          in: path
+          description: ID of customer to get details
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '202':
+          description: Customer Details Fetched Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailsResponse'
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '405':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        default:
+          description: successful operation
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailsResponse'
+    delete:
+      tags:
+        - customer
+      summary: Deletes a Customer
+      description: Deletes a Customer by uuid
+      operationId: deleteCustomerById
+      parameters:
+        - name: customerUUID
+          in: path
+          description: ID of customer to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '405':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        default:
+          description: successful operation
+          content: {}
+components:
+  schemas:
+    CustomerCreationRequest:
+      type: object
+      required:
+        - companyName
+        - contactName
+        - contactEmail
+        - contactNumber
+        - category
+      properties:
+        companyName:
+          description: Name of the Company of the Registering Customer
+          type: string
+          maxLength: 50
+          minLength: 1
+        contactName:
+          description: Contact Name of person of the company
+          type: string
+          maxLength: 50
+          minLength: 1
+        contactEmail:
+          description: Company Contact Email
+          type: string
+          maxLength: 50
+          minLength: 1
+          pattern: '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+        contactNumber:
+          description: Contact number of the customer
+          type: integer
+          format: int32
+          minimum: 1111111111
+        category:
+          description: Type of Customer
+          type: string
+          enum: [small. medium, large, dummy]
+    CustomerUpdateRequest:
+      type: object
+      required:
+        - customerUUID
+      properties:
+        companyName:
+          description: Name of the Company of the Registering Customer
+          type: string
+          maxLength: 50
+          minLength: 1
+        contactName:
+          description: Contact person of thest company
+          type: string
+          maxLength: 50
+          minLength: 1
+        contactEmail:
+          description: Company Contact Email
+          type: string
+          maxLength: 50
+          minLength: 1
+        contactNumber:
+          description: Contact number of the customer
+          type: integer
+          format: int32
+          minimum: 1111111111
+        Category:
+          description: Type of Customer
+          type: string
+          enum: [small, medium, large, dummy]
+        customerUUID:
+          description: Customer UUID
+          type: string
+    CustomerDetailsResponse:
+      type: object
+      required: 
+        - customerUUID
+      properties:
+        companyName:
+          description: Name of the Customer
+          type: string
+        contactName:
+          description: Customer conatct Name
+          type: string
+        contactEmail:
+          description: Customer Email Id
+          type: string
+        contactNumber:
+          description: Contact number of the customer
+          type: integer
+          format: int32
+        category:
+          description: Type of Customer
+          type: string
+          enum: [small, medium, large, dummy]
+        customerUUID:
+          description: Customer UUID
+          type: string
+    ApiErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        description:
+          type: string
