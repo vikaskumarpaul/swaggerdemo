@@ -17,7 +17,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<openapi.version>4.2.3</openapi.version>
+		<openapi.version>5.1.0</openapi.version>
 	</properties>
 
 	<dependencies>
